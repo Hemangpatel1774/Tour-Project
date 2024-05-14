@@ -1,12 +1,17 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const Register = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [userData, setUserData] = useState({ name: "", email: "", password: "" })
   const navigate = useNavigate();
+  const sendData =async ()=>{
+    await axios.post('http://localhost:1774/api/register',userData)
+    .then(()=>alert("registered"))
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!/^[a-zA-Z\s]*$/.test(name) || name.length===0) {
@@ -30,7 +35,8 @@ const Register = () => {
     setPassword("");
     setEmail("");
     setName("");
-    localStorage.setItem('isLogin', 'true');
+    localStorage.setItem('isLogin', 'false');
+    sendData()
     navigate('/')
   }
   return (
