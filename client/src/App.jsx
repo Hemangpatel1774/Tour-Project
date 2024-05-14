@@ -13,14 +13,12 @@ function App() {
   const [isLogin, setIsLogin] = useState("false");
   
   useEffect(() => {
-    if(localStorage.getItem('isLogin')){
-      console.log("getitem");
-    }
-    else{
+    if(!localStorage.getItem('isLogin')){
       console.log("setitem");
       localStorage.setItem('isLogin',"false");
     }
     setIsLogin(localStorage.getItem('isLogin'));
+    console.log(isLogin);
   }, [])
   
   return (

@@ -1,20 +1,33 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const Register = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [userData, setUserData] = useState({ name: "", email: "", password: "" })
-  const navigate = useNavigate();
-  const sendData =async ()=>{
-    await axios.post('http://localhost:1774/api/register',userData)
-    .then(()=>alert("registered"))
+  const [imgUrl, setimgUrl] = useState("")
+  const sendData = async () => {
+    await axios({
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      url: 'http://localhost:1774/api/register',
+      data: { name, email, password ,imgUrl},
+    })
+      .then((res) => {
+        alert(res.data)
+        location.reload('/')
+      })
+  }
+  const convUrl = (e)=>{
+    const file = new FileReader();
+    file.readAsDataURL(e.target.files[0]);
+    file.onload = () => {
+      setimgUrl(file.result);
+    }
   }
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!/^[a-zA-Z\s]*$/.test(name) || name.length===0) {
+    if (!/^[a-zA-Z\s]*$/.test(name) || name.length === 0) {
       alert("enter valid name")
       document.getElementById("name").focus();
       return false;
@@ -29,15 +42,13 @@ const Register = () => {
       document.getElementById("password").focus();
       return false;
     }
-    setUserData({ name: name, email: email, password: password })
     localStorage.setItem("username", name);
     localStorage.setItem("email", email);
     setPassword("");
     setEmail("");
     setName("");
-    localStorage.setItem('isLogin', 'false');
-    sendData()
-    navigate('/')
+    localStorage.setItem('isLogin', 'true');
+    sendData();
   }
   return (
     <div>
@@ -58,7 +69,7 @@ const Register = () => {
         </div>
         <div className="form-group">
           <label htmlFor="profile-photo">Profile Photo:</label>
-          <input type="file" id="profile-photo" name="profile-photo" accept="image/*" />
+          <input type="file" onChange={convUrl} id="profile-photo" name="profile-photo" accept="image/*" />
         </div>
         <button type="submit" onClick={handleSubmit}>Register</button>
       </form>
